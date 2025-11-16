@@ -1,6 +1,57 @@
-// auth.js - session helpers and page protection
+function criarUsuariosPadrao() {
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const padroes = [
+    {
+      id: "U_ADMIN",
+      nome: "Administrador",
+      email: "admin@vida.com",
+      senha: "1234",
+      perfil: "admin"
+    },
+    {
+      id: "U_PROF",
+      nome: "Profissional Exemplo",
+      email: "profissional@vida.com",
+      senha: "1234",
+      perfil: "profissional"
+    },
+    {
+      id: "U_PAC",
+      nome: "Paciente Exemplo",
+      email: "paciente@vida.com",
+      senha: "1234",
+      perfil: "paciente"
+    }
+  ];
+
+  let alterado = false;
+
+  padroes.forEach(p => {
+    const existe = users.some(u => u.email === p.email);
+    if (!existe) {
+      users.push(p);
+      alterado = true;
+    }
+  });
+
+  if (alterado) {
+    localStorage.setItem("users", JSON.stringify(users));
+    console.log("Usuários padrão criados!");
+  }
+}
+
+// Executa ao carregar o site
+criarUsuariosPadrao();
+
+
+// =======================================================
+// auth.js original — session helpers and page protection
+// =======================================================
+
 function getSession() {
-  try { return JSON.parse(localStorage.getItem("user_session")); } catch(e) { return null; }
+  try { return JSON.parse(localStorage.getItem("user_session")); }
+  catch(e) { return null; }
 }
 
 function requireAuth(allowedProfiles) {
