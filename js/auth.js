@@ -1,5 +1,14 @@
+// ==================== RESET LEGADO ====================
+// Remove storage antigo para evitar conflito
+localStorage.removeItem("usuarios");
+
+
+// ==================== CRIA USUÁRIOS PADRÃO ====================
 function criarUsuariosPadrao() {
+
   let users = JSON.parse(localStorage.getItem("users")) || [];
+  let profissionais = JSON.parse(localStorage.getItem("profissionais")) || [];
+  let pacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
 
   const padroes = [
     {
@@ -14,60 +23,96 @@ function criarUsuariosPadrao() {
       nome: "Profissional Exemplo",
       email: "profissional@vida.com",
       senha: "1234",
-      perfil: "profissional"
+      perfil: "profissional",
+      especialidade: "Clínico Geral",
+      telefone: "(00) 00000-0000"
     },
     {
       id: "U_PAC",
       nome: "Paciente Exemplo",
       email: "paciente@vida.com",
       senha: "1234",
-      perfil: "paciente"
+      perfil: "paciente",
+      cpf: "000.000.000-00",
+      telefone: "(00) 00000-0000"
     }
   ];
 
-  let alterado = false;
+  let changed = false;
 
-  padroes.forEach(p => {
-    const existe = users.some(u => u.email === p.email);
-    if (!existe) {
-      users.push(p);
-      alterado = true;
+  padroes.forEach(u => {
+
+    // USERS
+    if (!users.some(x => x.email === u.email)) {
+      users.push({
+        id: u.id,
+        nome: u.nome,
+        email: u.email,
+        senha: u.senha,
+        perfil: u.perfil
+      });
+      changed = true;
+    }
+
+    // PROFISSIONAIS
+    if (u.perfil === "profissional") {
+      if (!profissionais.some(x => x.email === u.email)) {
+        profissionais.push({
+          id: u.id,
+          nome: u.nome,
+          email: u.email,
+          especialidade: u.especialidade,
+          telefone: u.telefone
+        });
+        changed = true;
+      }
+    }
+
+    // PACIENTES
+    if (u.perfil === "paciente") {
+      if (!pacientes.some(x => x.email === u.email)) {
+        pacientes.push({
+          id: u.id,
+          nome: u.nome,
+          email: u.email,
+          cpf: u.cpf,
+          telefone: u.telefone
+        });
+        changed = true;
+      }
     }
   });
 
-  if (alterado) {
+  if (changed) {
     localStorage.setItem("users", JSON.stringify(users));
-    console.log("Usuários padrão criados!");
+    localStorage.setItem("profissionais", JSON.stringify(profissionais));
+    localStorage.setItem("pacientes", JSON.stringify(pacientes));
   }
 }
 
-// Executa ao carregar o site
 criarUsuariosPadrao();
 
 
-// =======================================================
-// auth.js original — session helpers and page protection
-// =======================================================
-
+// ==================== SESSÃO ====================
 function getSession() {
   try { return JSON.parse(localStorage.getItem("user_session")); }
-  catch(e) { return null; }
+  catch { return null; }
 }
 
-function requireAuth(allowedProfiles) {
-  const session = getSession();
-  if (!session) {
+function requireAuth(allowed) {
+  const s = getSession();
+  if (!s) {
     window.location.href = "login.html";
     return null;
   }
-  if (allowedProfiles && allowedProfiles.length && !allowedProfiles.includes(session.perfil)) {
-    alert("Acesso não autorizado para o seu perfil.");
+  if (allowed && !allowed.includes(s.perfil)) {
+    alert("Acesso não autorizado.");
     window.location.href = "login.html";
     return null;
   }
-  const el = document.getElementById('user-name-display');
-  if (el) el.textContent = session.nome || session.email || '';
-  return session;
+  const nameEl = document.getElementById("user-name-display");
+  if (nameEl) nameEl.textContent = s.nome || s.email;
+  return s;
 }
 
 function logout() {

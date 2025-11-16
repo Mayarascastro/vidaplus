@@ -16,7 +16,9 @@
       <form class="login-form" id="loginForm">
         <input type="hidden" id="perfil" value="paciente">
         <label for="perfil">Entrar como: </label>
-        <div class="profile-select">
+
+        <!-- SELEÇÃO DE PERFIL -->
+        <div class="profile-select" role="tablist" aria-label="Perfis">
           <button type="button" class="profile-btn active" data-role="paciente">Paciente</button>
           <button type="button" class="profile-btn" data-role="profissional">Profissional</button>
           <button type="button" class="profile-btn" data-role="admin">Administrador</button>
@@ -28,16 +30,17 @@
         <label for="senha">Senha</label>
         <div class="input-password">
           <input type="password" id="senha" placeholder="Digite sua senha" required>
-          <span class="toggle-password material-icons">visibility</span>
+          <span class="toggle-password material-icons" role="button" aria-label="Mostrar senha">visibility</span>
         </div>
 
         <div class="login-options">
-          <label><input type="checkbox"> Lembrar acesso</label>
+          <label><input type="checkbox" id="rememberMe"> Lembrar acesso</label>
           <a href="#" class="forgot-password">Esqueci a senha</a>
         </div>
 
         <button type="submit" class="btn-primary login-btn">Entrar</button>
       </form>
+
       <div style="margin-top:auto;padding:16px">
         <button onclick="window.location.href='index.html'">Voltar ao início</button>
       </div>

@@ -1,71 +1,71 @@
-// login.js - handles login form and session
-document.addEventListener('DOMContentLoaded', function(){
-  // profile buttons
-  const profileButtons = document.querySelectorAll(".profile-btn");
-  const perfilInput = document.getElementById("perfil");
+document.addEventListener('DOMContentLoaded', function () {
+
+  const perfilInput = document.getElementById('perfil');
+  const profileButtons = document.querySelectorAll('.profile-btn');
+  const togglePasswordBtn = document.querySelector('.toggle-password');
+  const senhaField = document.getElementById('senha');
+  const form = document.getElementById('loginForm');
+
+  // Seleção de perfil
   profileButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      profileButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+    btn.addEventListener('click', () => {
+      profileButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       perfilInput.value = btn.dataset.role;
     });
   });
 
-  // toggle password
-  const togglePasswordButton = document.querySelector(".toggle-password");
-  const senhaField = document.getElementById("senha");
-  if (togglePasswordButton && senhaField) {
-    togglePasswordButton.addEventListener("click", () => {
-      const isPassword = senhaField.type === "password";
-      senhaField.type = isPassword ? "text" : "password";
-      togglePasswordButton.textContent = isPassword ? "visibility_off" : "visibility";
-    });
+  // Toggle senha
+  togglePasswordBtn.addEventListener('click', () => {
+    const isPassword = senhaField.type === "password";
+    senhaField.type = isPassword ? "text" : "password";
+    togglePasswordBtn.textContent = isPassword ? "visibility_off" : "visibility";
+  });
+
+  function loadUsers() {
+    return JSON.parse(localStorage.getItem("users")) || [];
   }
 
-  const form = document.getElementById("loginForm");
-  if (form) {
-    form.addEventListener("submit", function(e){
-      e.preventDefault();
+  const profissionais = JSON.parse(localStorage.getItem("profissionais")) || [];
+  const pacientes = JSON.parse(localStorage.getItem("pacientes")) || [];
 
-      const rawEmail = document.getElementById("email").value || '';
-      const rawSenha = document.getElementById("senha").value || '';
-      const perfil = document.getElementById("perfil").value;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-      const email = rawEmail.trim().toLowerCase();
-      const senha = rawSenha.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const senha = document.getElementById("senha").value.trim();
+    const perfil = perfilInput.value;
 
-      let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const users = loadUsers().map(u => ({ ...u, email: u.email.toLowerCase() }));
 
-      // debug quick log (remova em produção)
-      // console.log('Tentativa de login:', {email, perfil});
-      // console.log('usuarios armazenados:', usuarios);
+    const user = users.find(u => u.email === email && u.senha == senha);
 
-      const usuarioEncontrado = usuarios.find(u => {
-        const uEmail = (u.email || '').toString().trim().toLowerCase();
-        const uSenha = (u.senha || '').toString().trim();
-        const uPerfil = (u.perfil || '').toString().trim();
-        return uEmail === email && uSenha === senha && uPerfil === perfil;
-      });
+    if (!user) {
+      alert("Credenciais inválidas");
+      return;
+    }
 
-      if (!usuarioEncontrado) {
-        alert("Credenciais inválidas!");
-        return;
-      }
+    if (user.perfil !== perfil) {
+      alert("Usuário não pertence ao perfil selecionado.");
+      return;
+    }
 
-      // save session (with id, pacienteId, profissionalId)
-      localStorage.setItem("user_session", JSON.stringify({
-        id: usuarioEncontrado.id || null,
-        nome: usuarioEncontrado.nome || '',
-        email: usuarioEncontrado.email || '',
-        perfil: usuarioEncontrado.perfil || '',
-        pacienteId: usuarioEncontrado.pacienteId || null,
-        profissionalId: usuarioEncontrado.profissionalId || null
-      }));
+    const session = { ...user };
 
-      // redirect based on profile
-      if (perfil === "admin") window.location.href = "admin_main.html";
-      if (perfil === "profissional") window.location.href = "profissional_dashboard.html";
-      if (perfil === "paciente") window.location.href = "paciente_dashboard.html";
-    });
-  }
+    if (perfil === "profissional") {
+      const p = profissionais.find(x => x.email === user.email);
+      if (p) session.profissionalId = p.id;
+    }
+
+    if (perfil === "paciente") {
+      const p = pacientes.find(x => x.email === user.email);
+      if (p) session.pacienteId = p.id;
+    }
+
+    localStorage.setItem("user_session", JSON.stringify(session));
+
+    if (perfil === "admin") window.location.href = "admin_main.html";
+    if (perfil === "profissional") window.location.href = "profissional_dashboard.html";
+    if (perfil === "paciente") window.location.href = "paciente_dashboard.html";
+  });
 });
