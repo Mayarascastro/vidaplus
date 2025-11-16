@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profissional - VidaPlus</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="professional-body">
+
+  <div class="sidebar">
+    <h2>VidaPlus</h2>
+    <div class="menu-item"><span class="material-icons">dashboard</span>Dados Pessoais</div>
+    <div class="menu-item" id="menu-dashboard"><span class="material-icons">dashboard</span>Agenda</div>
+    <div style="margin-top:auto;padding:16px">
+      <button class="btn-small" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1 class="page-title">Minha Agenda</h1>
+
+    <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px;">
+      <label>Filtrar dia: <input type="date" id="filterDay" /></label>
+      <button class="btn-primary" id="btnRefresh">Atualizar</button>
+    </div>
+
+    <table class="table">
+      <thead><tr><th>Data</th><th>Hora</th><th>Paciente</th><th>Status</th><th>Ações</th><th>Prontuário</th></tr></thead>
+      <tbody id="agendaLista"></tbody>
+    </table>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/profissional_dashboard.js"></script>
+
+</body>
+</html>

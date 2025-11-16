@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profissionais - VidaPlus</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="admin-body">
+  <div class="sidebar">
+    <h2>VidaPlus</h2>
+    <div class="menu-item" id="menu-dashboard"><span class="material-icons">dashboard</span>Dashboard</div>
+    <div class="menu-item active" id="menu-profissionais"><span class="material-icons">medical_services</span>Profissionais</div>
+    <div class="menu-item" id="menu-pacientes"><span class="material-icons">person</span>Pacientes</div>
+    <div class="menu-item" id="menu-consultas"><span class="material-icons">event</span>Consultas</div>
+    <div class="menu-item" id="menu-usuarios"><span class="material-icons">admin_panel_settings</span>Usuários</div>
+    <div style="margin-top:auto;padding:16px">
+      <button class="btn-small" id="logoutBtn" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="header">Gerenciar Profissionais de Saúde</div>
+
+    <div class="row" style="margin-bottom: 20px; justify-content: space-between;">
+      <input type="text" id="searchProfissional" placeholder="Buscar profissional..." class="search-input" />
+      <button class="btn-primary" onclick="openModal()">+ Adicionar Profissional</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Especialidade</th>
+          <th>CRM/COREN</th>
+          <th>Telefone</th>
+          <th>E-mail</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="listaProfissionais"></tbody>
+    </table>
+  </div>
+
+  <!-- MODAL DE CADASTRO / EDIÇÃO -->
+  <div class="modal" id="modalCadastro" style="display:none;">
+    <div class="modal-content">
+      <h2 id="modalTitle">Cadastrar Profissional</h2>
+
+      <label>Nome</label>
+      <input type="text" id="nomeCadastro" />
+
+      <label>Especialidade</label>
+      <input type="text" id="especialidadeCadastro" />
+
+      <label>CRM/COREN</label>
+      <input type="text" id="registroCadastro" />
+
+      <label>Telefone</label>
+      <input type="text" id="telefoneCadastro" />
+
+      <label>E-mail</label>
+      <input type="email" id="emailCadastro" />
+
+      <label>Senha</label>
+      <input type="password" id="senhaCadastro" placeholder="Senha de acesso (padrão: 1234)" />
+
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btnSalvar">Salvar</button>
+        <button class="btn-small" onclick="fecharModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/admin_profissionais.js"></script>
+
+</body>
+</html>
